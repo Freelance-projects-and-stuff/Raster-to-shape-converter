@@ -131,6 +131,8 @@ dmypy.json
 # images
 *.png
 *.tif
+*.tfw
 *.jpg
+*.csv
 
 .vscode
