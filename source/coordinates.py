@@ -1,13 +1,10 @@
-import csv
 import glob
 import os
 from itertools import product
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import spectral as sp
-from osgeo import gdal, osr
+from osgeo import gdal
 
 
 def get_coordinates_df(image_path):

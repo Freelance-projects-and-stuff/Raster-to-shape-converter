@@ -42,15 +42,15 @@ if __name__ == '__main__':
     image_path = images_paths_list[image_idx]
     image_name = image_path.split("\\")[-1].split(".")[0]
 
-    # mask_df = get_segmentation_mask_df(image_path, rock_formula)
+    mask_df = get_segmentation_mask_df(image_path, rock_formula)
 
     save_dir = os.path.abspath("output/masks")
-    # os.makedirs(save_dir, exist_ok=True)
-    # mask_df.to_csv(os.path.join(save_dir, image_name + ".csv"), index=False)
+    os.makedirs(save_dir, exist_ok=True)
+    mask_df.to_csv(os.path.join(save_dir, image_name + ".csv"), index=False)
 
 	### read from file and plot mask
-    mask_df = pd.read_csv(os.path.join(save_dir, image_name + ".csv"))
-    mask_df = mask_df[mask_df.mask_value == 1]
-    plt.figure()
-    plt.scatter(mask_df["img_u"].to_numpy(), mask_df["img_v"].to_numpy())
-    plt.show()
+    # mask_df = pd.read_csv(os.path.join(save_dir, image_name + ".csv"))
+    # mask_df = mask_df[mask_df.mask_value == 1]
+    # plt.figure()
+    # plt.scatter(mask_df["img_u"].to_numpy(), mask_df["img_v"].to_numpy())
+    # plt.show()
