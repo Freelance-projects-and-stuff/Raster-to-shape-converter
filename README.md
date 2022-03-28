@@ -5,3 +5,5 @@ To test put complementary .tif and .tfw files into data/images folder. Than run 
 - source/coordinates.py
 - source/mask.py
 - source/shapefile_test.py
+
+Use create_shapefile.ipynb to run all steps for all images.
