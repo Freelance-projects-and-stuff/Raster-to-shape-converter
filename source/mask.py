@@ -7,16 +7,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 
-
-def rock_formula(bands):
-    b1 = bands[0]
-    b2 = bands[1]
-    b3 = bands[2]
-    if (b1 < b2) and (b1 < b3) and (b3 >= b2) and (b3 - b2 <= 5) and (b2 >= 165):
-        mask_value = 1
-    else:
-        mask_value = 0
-    return mask_value
+from source.formulas import rock_formula
 
 
 def get_segmentation_mask_df(image_path, formula):
