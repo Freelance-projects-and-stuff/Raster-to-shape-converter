@@ -15,9 +15,11 @@ def get_segmentation_mask_df(image_path, formula, loader="PIL"):
     if loader == "PIL":
         image = Image.open(image_path)
         image_arr = np.array(image)
+        metadata = None
     elif loader == "spectral":
         image = sp.envi.open(image_path)
         image_arr = image[:,:,:]
+        metadata = image.metadata
     height, width = image_arr.shape[:2]
 
     mask_list = []
@@ -27,7 +29,7 @@ def get_segmentation_mask_df(image_path, formula, loader="PIL"):
         mask_list.append([img_u, img_v, mask_value])
 
     mask_df = pd.DataFrame(np.array(mask_list), columns=['img_u', 'img_v', 'mask_value'])
-    return mask_df
+    return mask_df, metadata
 
 if __name__ == '__main__':
 
@@ -38,7 +40,7 @@ if __name__ == '__main__':
     image_path = images_paths_list[image_idx]
     image_name = image_path.split("\\")[-1].split(".")[0]
 
-    mask_df = get_segmentation_mask_df(image_path, ndvi, loader="spectral")
+    mask_df, _ = get_segmentation_mask_df(image_path, ndvi, loader="spectral")
 
     save_dir = os.path.abspath("output/masks")
     os.makedirs(save_dir, exist_ok=True)

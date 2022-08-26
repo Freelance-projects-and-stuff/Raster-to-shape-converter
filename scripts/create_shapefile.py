@@ -3,7 +3,9 @@ import glob
 import os
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
+import spectral as sp
 
 from source.coordinates import get_coordinates_df
 from source.formulas import gndvi, mcari, ndvi, pssr, rock_formula, wbi
@@ -27,17 +29,20 @@ equation = ndvi
 data_dir = "data/images"
 save_shp_dir = "output/shape_files"
 save_img_dir = "output/images"
+save_ras_dir = "output/rasters"
 
 data_dir = os.path.abspath(data_dir)
 save_shp_dir = os.path.abspath(save_shp_dir)
 save_img_dir = os.path.abspath(save_img_dir)
+save_ras_dir = os.path.abspath(save_ras_dir)
 
 os.makedirs(save_shp_dir, exist_ok=True)
 os.makedirs(save_img_dir, exist_ok=True)
+os.makedirs(save_ras_dir, exist_ok=True)
 
 images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.hdr")))
 
-# image_idx = 0
+# image_idx = 2
 # image_path = images_paths_list[image_idx]
 
 for image_path in images_paths_list:
@@ -50,16 +55,22 @@ for image_path in images_paths_list:
     print("Done.")
     print("Extracting masks...")
     image_mask_path = change_path_suffix(image_path, suffix="hdr")
-    mask_df = get_segmentation_mask_df(image_mask_path, equation,
-                                       loader="spectral")
+    mask_df, metadata = get_segmentation_mask_df(image_mask_path, equation,
+                                        loader="spectral")
     print("Done.")
     print("Saving shape file...")
     data_gdf = get_merged_gdf(coor_df, mask_df)
     data_gdf.to_file(filename=os.path.join(save_shp_dir, image_name + ".shp"),
-                     driver='ESRI Shapefile')
+                        driver='ESRI Shapefile')
     print("Done.")
     print("Saving png file...")
-    save_image(mask_df,
-               save_path=os.path.join(save_img_dir, image_name + ".png"),
-               image_title=equation.__name__)
+    raster = save_image(mask_df,
+                save_path=os.path.join(save_img_dir, image_name + ".png"),
+                image_title=equation.__name__)
     print("Done.")
+    if metadata:
+        print("Saving raster file...")
+        metadata["band names"] = 'Value'
+        sp.envi.save_image(os.path.join(save_ras_dir, image_name + ".hdr"), raster,
+                        metadata=metadata, dtype=np.float32, force=True)
+        print("Done.")
