@@ -6,11 +6,14 @@ import numpy as np
 import pandas as pd
 
 
-def save_image(mask_df, save_path):
+def save_image(mask_df, save_path, image_title=None):
     v_max, u_max = int(mask_df.img_v.max()), int(mask_df.img_u.max())
     image_out = np.zeros((v_max+1, u_max+1))
-    image_out[mask_df.img_v.to_numpy(), mask_df.img_u.to_numpy()] = mask_df.mask_value.to_numpy()
+    image_out[mask_df.img_v.to_numpy().astype("int"),
+              mask_df.img_u.to_numpy().astype("int")] = mask_df.mask_value.to_numpy()
+    plt.title(image_title)
     plt.imshow(image_out)
+    plt.colorbar()
     plt.savefig(save_path)
     return image_out
 
@@ -18,7 +21,7 @@ def save_image(mask_df, save_path):
 if __name__ == '__main__':
 
     data_dir = os.path.abspath("data/images")
-    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.tif")))
+    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.hdr")))
 
     image_idx = 0
     image_path = images_paths_list[image_idx]

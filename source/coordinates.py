@@ -38,7 +38,7 @@ def get_coordinates_df(image_path):
 if __name__ == '__main__':
 
     data_dir = os.path.abspath("data/images")
-    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.tif")))
+    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.dat")))
 
     image_idx = 0
     image_path = images_paths_list[image_idx]

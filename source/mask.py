@@ -5,14 +5,19 @@ from itertools import product
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import spectral as sp
 from PIL import Image
 
-from source.formulas import rock_formula
+from source.formulas import ndvi, rock_formula
 
 
-def get_segmentation_mask_df(image_path, formula):
-    image = Image.open(image_path)
-    image_arr = np.array(image)
+def get_segmentation_mask_df(image_path, formula, loader="PIL"):
+    if loader == "PIL":
+        image = Image.open(image_path)
+        image_arr = np.array(image)
+    elif loader == "spectral":
+        image = sp.envi.open(image_path)
+        image_arr = image[:,:,:]
     height, width = image_arr.shape[:2]
 
     mask_list = []
@@ -27,21 +32,14 @@ def get_segmentation_mask_df(image_path, formula):
 if __name__ == '__main__':
 
     data_dir = os.path.abspath("data/images")
-    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.tif")))
+    images_paths_list = sorted(glob.glob(os.path.join(data_dir, "*.hdr")))
 
     image_idx = 0
     image_path = images_paths_list[image_idx]
     image_name = image_path.split("\\")[-1].split(".")[0]
 
-    mask_df = get_segmentation_mask_df(image_path, rock_formula)
+    mask_df = get_segmentation_mask_df(image_path, ndvi, loader="spectral")
 
     save_dir = os.path.abspath("output/masks")
     os.makedirs(save_dir, exist_ok=True)
     mask_df.to_csv(os.path.join(save_dir, image_name + ".csv"), index=False)
-
-	### read from file and plot mask
-    # mask_df = pd.read_csv(os.path.join(save_dir, image_name + ".csv"))
-    # mask_df = mask_df[mask_df.mask_value == 1]
-    # plt.figure()
-    # plt.scatter(mask_df["img_u"].to_numpy(), mask_df["img_v"].to_numpy())
-    # plt.show()
