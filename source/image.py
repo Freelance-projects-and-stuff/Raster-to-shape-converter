@@ -15,6 +15,7 @@ def save_image(mask_df, save_path, image_title=None):
     plt.imshow(image_out)
     plt.colorbar()
     plt.savefig(save_path)
+    plt.close()
     return image_out
 
 
